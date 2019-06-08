@@ -107,3 +107,32 @@ class QuestionIndexViewTests(TestCase):
         )
 
 
+class QuestionDetailViewTests(TestCase):
+    def test_future_question(self):
+        """
+        The detail view of a question with a pub_date in the future
+        returns a 404 not found.
+        """
+        future_question = create_question(question_text='Future question.', days=5)
+        url = reverse('polls:detail', args=(future_question.id,))
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_past_question(self):
+        """
+        The detail view of a question with a pub_date in the past
+        displays the question's text.
+        """
+        past_question = create_question(question_text='Past Question.', days=-5)
+        url = reverse('polls:detail', args=(past_question.id,))
+        response = self.client.get(url)
+        self.assertContains(response, past_question.question_text)
+
+# Ideas for more tests
+# https://docs.djangoproject.com/en/2.2/intro/tutorial05/#ideas-for-more-tests
+
+# Further Testing
+# https://docs.djangoproject.com/en/2.2/intro/tutorial05/#further-testing
+
+# Testing in Django
+# https://docs.djangoproject.com/en/2.2/topics/testing/
